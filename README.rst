@@ -35,8 +35,9 @@ Install requirements.txt
 How To
 ------------
 Enter the values relating to the input paths below, below is an example of the prompt + input
+
 .. code-block:: bash
 
-   path: C:\Users\rory\Documents
-   psd name: Homepage.psd
-   naming convention: 2018-01-01_SS19_Ph1_R1_Homepage_
+   path: C:\Users\rory\Documents    
+   psd name: Homepage.psd   
+   naming convention: 2018-01-01_SS19_Ph1_R1_Homepage_  
