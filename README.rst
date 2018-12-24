@@ -25,6 +25,13 @@ Pillow
 
    pip install Pillow==4.1.1
 
+Install requirements.txt
+
+.. code-block:: bash
+
+   pip install -r requirements.txt
+
+
 How To
 ------------
 Enter the values relating to the input paths below, below is an example of the prompt + input
