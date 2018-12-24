@@ -10,7 +10,7 @@ root_dir = path
 
 psd = input('psd name:')
 path_join = os.path.join(path, psd)
-name_pattern = input('example: (2018-12-10_AW18_Ph3_R4_Homepage_) \n'
+name_pattern = input('example == 2018-12-10_AW18_Ph3_R4_Homepage_ \n'
                      'naming convention: ')
 
 psd_load = PSDImage.load(path_join)
