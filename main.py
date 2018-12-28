@@ -18,9 +18,10 @@ psd_load = PSDImage.load(path_join)
 """ make an images directory if it does not exist """
 os.makedirs(root_dir + '\\images', exist_ok=True)
 
-desktopArtboard, mobileArtboard = None, None
+desktopArtboard, tabletArtboard, mobileArtboard = None, None, None
 
 desktop = '1600'
+tablet = '1200'
 mobile = '768'
 
 counter = []
@@ -30,6 +31,8 @@ remove_psd_list = []
 for i in psd_load.layers:
     if 'DESKTOP'.lower() in i.name.lower():
         desktopArtboard = i
+    if '1200'.lower() in i.name.lower():
+        tabletArtboard = i
     if 'MOBILE'.lower() in i.name.lower():
         mobileArtboard = i
 
@@ -111,3 +114,5 @@ def remove_file(file):
 recurse(desktopArtboard, size=desktop)
 counter = []
 recurse(mobileArtboard, size=mobile)
+counter = []
+recurse(tabletArtboard, size=tablet)
