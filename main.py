@@ -5,13 +5,17 @@ import os
 """
     Exports images from a photoshop file
 """
+string = 'PSD images must be in a folder called strictly Image or image\n' \
+         'New in images must be in a folder containing the work block\n'
+print(string)
+
 path = input('path:')  # directory path of the PSD
 root_dir = path
 
 psd = input('psd name:')
 path_join = os.path.join(path, psd)
-name_pattern = input('example == 2018-12-10_AW18_Ph3_R4_Homepage_ \n'
-                     'naming convention: ')
+name_pattern = input('example == 2018-12-10_AW18_Ph3_R4_Homepage_\n'
+                     'naming convention:')
 
 psd_load = PSDImage.load(path_join)
 
@@ -60,7 +64,7 @@ def recurse(p, size):
                                         counter.append(group)  # Add 1 to counter
                                         layer = a.linked_data
                                         remove_psd_list.append(layer.filename)  # Add temp psd to list
-                                        image = newPSD(layer)
+                                        image = new_psd(layer)
                                         save_image(image, size)
                                         remove_file(layer.filename)
 
@@ -73,7 +77,7 @@ def recurse(p, size):
                     """
                         All other images
                     """
-                    if 'image'.lower() in layer.name.lower():
+                    if 'image'.lower() == layer.name.lower():
                         if 'block'.lower() not in p.name:
                             try:
                                 if layer.kind == 'group':
@@ -93,17 +97,20 @@ def recurse(p, size):
 
 
 def save_image(image, size):
-    if len(counter) <= 9:  # 01.jpg
+    """ Save image if counter length is less than 9 """
+    if len(counter) <= 9:
         image.save(f'{root_dir}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg')
-    if len(counter) > 9:  # 10.jpg
+
+    """ Save image if counter length is greater than 9 """
+    if len(counter) > 9:
         image.save(f'{root_dir}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg')
 
 
-def newPSD(layer):
+def new_psd(layer):
     file_psd = root_dir + '\\' + layer.filename
     layer.save(file_psd)
-    psd_load = PSDImage.load(file_psd)
-    image = psd_load.as_PIL()
+    load = PSDImage.load(file_psd)
+    image = load.as_PIL()
     return image
 
 
@@ -111,8 +118,12 @@ def remove_file(file):
     os.remove(root_dir + '\\' + file)
 
 
+def clear_list(f):
+    return f.clear()
+
+
 recurse(desktopArtboard, size=desktop)
-counter.clear()
+clear_list(counter)
 recurse(mobileArtboard, size=mobile)
-counter.clear()
+clear_list(counter)
 recurse(tabletArtboard, size=tablet)
