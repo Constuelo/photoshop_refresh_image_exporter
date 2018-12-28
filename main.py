@@ -94,9 +94,9 @@ def recurse(p, size):
 
 def save_image(image, size):
     if len(counter) <= 9:  # 01.jpg
-        image.save(f'{root_dir}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg', quality=80, optimize=True)
+        image.save(f'{root_dir}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg')
     if len(counter) > 9:  # 10.jpg
-        image.save(f'{root_dir}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg', quality=80, optimize=True)
+        image.save(f'{root_dir}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg')
 
 
 def newPSD(layer):
