@@ -112,7 +112,7 @@ def remove_file(file):
 
 
 recurse(desktopArtboard, size=desktop)
-counter = []
+counter.clear()
 recurse(mobileArtboard, size=mobile)
-counter = []
+counter.clear()
 recurse(tabletArtboard, size=tablet)
