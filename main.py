@@ -1,23 +1,26 @@
 from psd_tools import PSDImage
 import os
-
-
+from tqdm import tqdm
 """
     Exports images from a photoshop file
 """
+BLUE, END = '\33[94m', '\033[0m'
+
 string = 'PSD images must be in a folder called strictly Image or image\n' \
          'New in images must be in a folder containing the work block\n'
 print(string)
 
-path = input('path:')  # directory path of the PSD
+path = input('file path:')
 root_dir = path
 
 psd = input('psd name:')
 path_join = os.path.join(path, psd)
-name_pattern = input('example == 2018-12-10_AW18_Ph3_R4_Homepage_\n'
+name_pattern = input('example == 2019-01-21_SS19_Ph1_R3_Homepage_UK\n'
                      'naming convention:')
 
+print(f'\nLoading {{}}{psd}{{}}'.format(BLUE, END))
 psd_load = PSDImage.load(path_join)
+print(f'Finished loading {{}}{psd}{{}}\n'.format(BLUE, END))
 
 """ make an images directory if it does not exist """
 os.makedirs(root_dir + '\\images', exist_ok=True)
@@ -123,7 +126,10 @@ def clear_list(f):
 
 
 recurse(desktopArtboard, size=desktop)
+print('Finished desktop images.')
 clear_list(counter)
 recurse(mobileArtboard, size=mobile)
+print('Finished mobile images.')
 clear_list(counter)
 recurse(tabletArtboard, size=tablet)
+print('Finished tablet images.')
