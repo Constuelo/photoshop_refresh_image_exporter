@@ -10,11 +10,15 @@ intro_text = 'PSD images must be in a folder called strictly Image or image\n' \
          'New in images must be in a folder containing the work block\n'
 print(intro_text)
 
-path = input('file path:')
-root_dir = path
+user_directory = input('file path:')
 
 psd = input('psd name:')
-path_join = os.path.join(path, psd)
+
+path_join = os.path.join(user_directory, psd)
+for file in os.listdir(user_directory):
+    if psd in file:
+        path_join = user_directory + '\\' + file
+
 name_pattern = input('example == 2019-01-21_SS19_Ph1_R3_Homepage_UK\n'
                      'naming convention:')
 
@@ -23,7 +27,7 @@ psd_load = PSDImage.load(path_join)
 print(f'Finished loading {{}}{psd}{{}}\n'.format(BLUE, END))
 
 """ make an images directory if it does not exist """
-os.makedirs(root_dir + '\\images', exist_ok=True)
+os.makedirs(user_directory + '\\images', exist_ok=True)
 
 desktopArtboard, tabletArtboard, mobileArtboard = None, None, None
 
@@ -102,15 +106,15 @@ def recurse(p, size):
 def save_image(image, size):
     """ Save image if counter length is less than 9 """
     if len(counter) <= 9:
-        image.save(f'{root_dir}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg')
+        image.save(f'{user_directory}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg')
 
     """ Save image if counter length is greater than 9 """
     if len(counter) > 9:
-        image.save(f'{root_dir}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg')
+        image.save(f'{user_directory}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg')
 
 
 def new_psd(layer):
-    file_psd = root_dir + '\\' + layer.filename
+    file_psd = user_directory + '\\' + layer.filename
     layer.save(file_psd)
     load = PSDImage.load(file_psd)
     image = load.as_PIL()
@@ -118,7 +122,7 @@ def new_psd(layer):
 
 
 def remove_file(file):
-    os.remove(root_dir + '\\' + file)
+    os.remove(user_directory + '\\' + file)
 
 
 def clear_list(f):
