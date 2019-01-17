@@ -6,9 +6,9 @@ from tqdm import tqdm
 """
 BLUE, END = '\33[94m', '\033[0m'
 
-string = 'PSD images must be in a folder called strictly Image or image\n' \
+intro_text = 'PSD images must be in a folder called strictly Image or image\n' \
          'New in images must be in a folder containing the work block\n'
-print(string)
+print(intro_text)
 
 path = input('file path:')
 root_dir = path
