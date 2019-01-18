@@ -25,7 +25,7 @@ Pillow
 
    pip install Pillow==4.1.1
 
-Install requirements.txt
+or install requirements.txt
 
 .. code-block:: bash
 
@@ -34,7 +34,7 @@ Install requirements.txt
 
 How To
 ------------
-Enter the values relating to the input paths below, below is an example of the prompt + input
+Run ``main.py`` and input values relating to the prompts shown below.
 
 .. code-block:: bash
 
