@@ -106,11 +106,11 @@ def recurse(p, size):
 def save_image(image, size):
     """ Save image if counter length is less than 9 """
     if len(counter) <= 9:
-        image.save(f'{user_directory}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg')
+        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg')
 
     """ Save image if counter length is greater than 9 """
     if len(counter) > 9:
-        image.save(f'{user_directory}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg')
+        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg')
 
 
 def new_psd(layer):
