@@ -1,6 +1,9 @@
-from psd_tools import PSDImage
+from psd_tools2 import PSDImage
 import os
-from tqdm import tqdm
+import logging
+import io
+# logging.captureWarnings(True)
+
 """
     Exports images from a photoshop file
 """
@@ -10,20 +13,22 @@ intro_text = 'PSD images must be in a folder called strictly Image or image\n' \
          'New in images must be in a folder containing the work block\n'
 print(intro_text)
 
-user_directory = input('file path:')
+# user_directory = input('file path:')
+user_directory = 'X:\\WebDesign\\SS19\\category-pages\\z_approved\\test'
 
-psd = input('psd name:')
-
+# psd = input('psd name:')
+psd = 'test.psd'
 path_join = os.path.join(user_directory, psd)
 for file in os.listdir(user_directory):
     if psd in file:
         path_join = user_directory + '\\' + file
 
-name_pattern = input('example == 2019-01-21_SS19_Ph1_R3_Homepage_UK\n'
-                     'naming convention:')
+# name_pattern = input('example == 2019-01-21_SS19_Ph1_R3_Homepage_UK\n'
+#                      'naming convention:')
+name_pattern = 'asd_'
 
 print(f'\nLoading {{}}{psd}{{}}'.format(BLUE, END))
-psd_load = PSDImage.load(path_join)
+psd_load = PSDImage.open(path_join)
 print(f'Finished loading {{}}{psd}{{}}\n'.format(BLUE, END))
 
 """ make an images directory if it does not exist """
@@ -39,12 +44,12 @@ counter = []
 remove_psd_list = []
 
 """ gets specific desktop and mobile artboard """
-for i in psd_load.layers:
-    if 'DESKTOP'.lower() in i.name.lower():
+for i in reversed(list(psd_load.descendants())):
+    if 'DESKTOP'.lower() in str(i.name).lower().strip("'"):
         desktopArtboard = i
-    if '1200'.lower() in i.name.lower():
+    if '1200'.lower() in str(i.name).lower().strip("'"):
         tabletArtboard = i
-    if 'MOBILE'.lower() in i.name.lower():
+    if 'MOBILE'.lower() in str(i.name).lower().strip("'"):
         mobileArtboard = i
 
 
@@ -57,26 +62,25 @@ def recurse(p, size):
         note: Shape layers (vector) do not work correctly. \
     """
     try:
-        for layer in p.layers:
+        for layer in reversed(p):
             if layer.visible:
                 try:
                     """
                         New In Blocks
                     """
-                    if 'block'.lower() in layer.name.lower():
-                        for group in layer.layers:
-                            try:
-                                for a in group.layers:
-                                    if a.kind == 'smartobject':
-                                        counter.append(group)  # Add 1 to counter
-                                        layer = a.linked_data
-                                        remove_psd_list.append(layer.filename)  # Add temp psd to list
-                                        image = new_psd(layer)
-                                        save_image(image, size)
-                                        remove_file(layer.filename)
+                    if 'block'.lower() in str(layer.name).lower().strip("'"):
+                        try:
+                            for a in layer.descendants():
+                                if a.kind == 'smartobject':
+                                    counter.append(layer)  # Add 1 to counter
+                                    layer = a.linked_data
+                                    remove_psd_list.append(layer.filename)  # Add temp psd to list
+                                    image = new_psd(layer)
+                                    save_image(image, size)
+                                    remove_file(layer.filename)
 
-                            except AttributeError:
-                                pass
+                        except AttributeError:
+                            pass
                 except:
                     pass
 
@@ -84,12 +88,12 @@ def recurse(p, size):
                     """
                         All other images
                     """
-                    if 'image'.lower() == layer.name.lower():
-                        if 'block'.lower() not in p.name:
+                    if 'image'.lower() in str(layer.name).lower().strip("'"):
+                        if 'block'.lower() not in str(p.name).lower().strip("'"):
                             try:
                                 if layer.kind == 'group':
                                     counter.append(layer)
-                                    image = layer.as_PIL()
+                                    image = layer.compose()
                                     save_image(image, size)
 
                             except AttributeError:
@@ -100,6 +104,8 @@ def recurse(p, size):
                 recurse(layer, size=size)
 
     except AttributeError:
+        pass
+    except TypeError:
         pass
 
 
@@ -116,8 +122,11 @@ def save_image(image, size):
 def new_psd(layer):
     file_psd = user_directory + '\\' + layer.filename
     layer.save(file_psd)
-    load = PSDImage.load(file_psd)
-    image = load.as_PIL()
+    try:
+        load = PSDImage.open(file_psd)
+    except AssertionError as error:
+        print(error)
+    image = load.compose()
     return image
 
 
