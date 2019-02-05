@@ -1,29 +1,30 @@
-from psd_tools import PSDImage
+from psd_tools2 import PSDImage
 import os
-from tqdm import tqdm
+import logging
+import io
+
 """
     Exports images from a photoshop file
 """
 BLUE, END = '\33[94m', '\033[0m'
 
-intro_text = 'PSD images must be in a folder called strictly Image or image\n' \
-         'New in images must be in a folder containing the work block\n'
+intro_text = 'PSD images must be in a folder called strictly Image or image \n' \
+             'New in images must be in a folder containing the work block \n'
 print(intro_text)
 
 user_directory = input('file path:')
 
 psd = input('psd name:')
-
 path_join = os.path.join(user_directory, psd)
 for file in os.listdir(user_directory):
     if psd in file:
         path_join = user_directory + '\\' + file
 
-name_pattern = input('example == 2019-01-21_SS19_Ph1_R3_Homepage_UK\n'
-                     'naming convention:')
+print('example == 2019-01-21_SS19_Ph1_R3_Homepage_UK \n')
+name_pattern = input('naming convention:')
 
 print(f'\nLoading {{}}{psd}{{}}'.format(BLUE, END))
-psd_load = PSDImage.load(path_join)
+psd_load = PSDImage.open(path_join)
 print(f'Finished loading {{}}{psd}{{}}\n'.format(BLUE, END))
 
 """ make an images directory if it does not exist """
@@ -39,7 +40,7 @@ counter = []
 remove_psd_list = []
 
 """ gets specific desktop and mobile artboard """
-for i in psd_load.layers:
+for i in reversed(list(psd_load.descendants())):
     if 'DESKTOP'.lower() in i.name.lower():
         desktopArtboard = i
     if '1200'.lower() in i.name.lower():
@@ -57,26 +58,25 @@ def recurse(p, size):
         note: Shape layers (vector) do not work correctly. \
     """
     try:
-        for layer in p.layers:
+        for layer in reversed(p):
             if layer.visible:
                 try:
                     """
                         New In Blocks
                     """
-                    if 'block'.lower() in layer.name.lower():
-                        for group in layer.layers:
-                            try:
-                                for a in group.layers:
-                                    if a.kind == 'smartobject':
-                                        counter.append(group)  # Add 1 to counter
-                                        layer = a.linked_data
-                                        remove_psd_list.append(layer.filename)  # Add temp psd to list
-                                        image = new_psd(layer)
-                                        save_image(image, size)
-                                        remove_file(layer.filename)
+                    if 'new in'.lower() in layer.name.lower():
+                        try:
+                            for a in reversed(list(layer.descendants())):
+                                if a.kind == 'smartobject':
+                                    counter.append(layer)  # Add 1 to counter
+                                    layer = a.smart_object
+                                    remove_psd_list.append(layer.filename)  # Add temp psd to list
+                                    image = new_psd(layer)
+                                    save_image(image, size)
+                                    remove_file(layer.filename)
 
-                            except AttributeError:
-                                pass
+                        except AttributeError:
+                            pass
                 except:
                     pass
 
@@ -84,12 +84,12 @@ def recurse(p, size):
                     """
                         All other images
                     """
-                    if 'image'.lower() == layer.name.lower():
-                        if 'block'.lower() not in p.name:
+                    if 'image'.lower() in layer.name.lower():
+                        if 'new in'.lower() not in p.name.lower():
                             try:
                                 if layer.kind == 'group':
                                     counter.append(layer)
-                                    image = layer.as_PIL()
+                                    image = layer.compose()
                                     save_image(image, size)
 
                             except AttributeError:
@@ -101,39 +101,41 @@ def recurse(p, size):
 
     except AttributeError:
         pass
+    except TypeError:
+        pass
 
 
 def save_image(image, size):
     """ Save image if counter length is less than 9 """
     if len(counter) <= 9:
-        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg')
+        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg', quality=85)
 
     """ Save image if counter length is greater than 9 """
     if len(counter) > 9:
-        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg')
+        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg', quality=85)
 
 
 def new_psd(layer):
     file_psd = user_directory + '\\' + layer.filename
     layer.save(file_psd)
-    load = PSDImage.load(file_psd)
-    image = load.as_PIL()
+    load = PSDImage.open(file_psd)
+    image = load.compose()
     return image
 
 
-def remove_file(file):
-    os.remove(user_directory + '\\' + file)
+def remove_file(f):
+    os.remove(user_directory + '\\' + f)
 
 
 def clear_list(f):
     return f.clear()
 
 
+print('Starting desktop images...')
 recurse(desktopArtboard, size=desktop)
-print('Finished desktop images.')
 clear_list(counter)
+print('Starting mobile images...')
 recurse(mobileArtboard, size=mobile)
-print('Finished mobile images.')
 clear_list(counter)
+print('Starting tablet images...')
 recurse(tabletArtboard, size=tablet)
-print('Finished tablet images.')
