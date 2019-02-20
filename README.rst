@@ -13,23 +13,11 @@ Installation
 ``photoshop_refresh_image_exporter`` requires the below packages
 
 
-psd-tools2
+psd-tools
 
 .. code-block:: bash
 
-    pip install psd-tools2==1.7.27
-
-Pillow
-
-.. code-block:: bash
-
-   pip install Pillow==4.1.1
-
-or install requirements.txt
-
-.. code-block:: bash
-
-   pip install -r requirements.txt
+    pip install psd-tools
 
 
 How To
