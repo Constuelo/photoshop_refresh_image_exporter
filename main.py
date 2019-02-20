@@ -1,4 +1,4 @@
-from psd_tools2 import PSDImage
+from psd_tools import PSDImage
 import os
 import logging
 import io
