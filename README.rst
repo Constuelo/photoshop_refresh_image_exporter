@@ -1,10 +1,10 @@
 photoshop_refresh_image_exporter
-==========
+=================================
 
 ``photoshop_refresh_image_exporter`` is a script to export JPG images from a PSD with in the joules refresh workflow.
 
 Requires
-------------
+--------
 Supports Python 3.6.7
 
 
@@ -21,7 +21,7 @@ psd-tools
 
 
 How To
-------------
+------
 Run ``main.py`` and input values relating to the prompts shown below.
 
 .. code-block:: bash
