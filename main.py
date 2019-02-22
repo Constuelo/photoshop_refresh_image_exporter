@@ -1,8 +1,6 @@
-from psd_tools2 import PSDImage
+from psd_tools import PSDImage
 import os
-import logging
-import io
-
+from pathlib import Path
 """
     Exports images from a photoshop file
 """
@@ -14,21 +12,34 @@ print(intro_text)
 
 user_directory = input('file path:')
 
-psd = input('psd name:')
-path_join = os.path.join(user_directory, psd)
-for file in os.listdir(user_directory):
-    if psd in file:
-        path_join = user_directory + '\\' + file
+""" psd file name, does not need to include extension """
+psd = input('PSD name:')
+
+if psd:
+    for file in os.listdir(user_directory):
+        if psd in file:
+            path_of_psd = Path(user_directory).joinpath(file)
+            break
+
+""" if input is none finds any psd file in directory """
+if not psd:
+    for file in os.listdir(user_directory):
+        if '.psb' in file or '.psd' in file:
+            path_of_psd = Path(user_directory).joinpath(file)
+            break
+
+if not path_of_psd:
+    path_of_psd = Path(user_directory).joinpath(psd)
 
 print('example == 2019-01-21_SS19_Ph1_R3_Homepage_UK \n')
 name_pattern = input('naming convention:')
 
 print(f'\nLoading {{}}{psd}{{}}'.format(BLUE, END))
-psd_load = PSDImage.open(path_join)
+psd_load = PSDImage.open(path_of_psd)
 print(f'Finished loading {{}}{psd}{{}}\n'.format(BLUE, END))
 
 """ make an images directory if it does not exist """
-os.makedirs(user_directory + '\\images', exist_ok=True)
+os.makedirs(Path(user_directory).joinpath('images'), exist_ok=True)
 
 desktopArtboard, tabletArtboard, mobileArtboard = None, None, None
 
@@ -108,15 +119,17 @@ def recurse(p, size):
 def save_image(image, size):
     """ Save image if counter length is less than 9 """
     if len(counter) <= 9:
-        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_0{str(len(counter))}.jpg', quality=85)
+        image.convert('RGB').save(
+            Path(user_directory).joinpath('images', f'{name_pattern}{size}_0{str(len(counter))}.jpg'), quality=85)
 
     """ Save image if counter length is greater than 9 """
     if len(counter) > 9:
-        image.convert('RGB').save(f'{user_directory}\\images\\{name_pattern}{size}_{str(len(counter))}.jpg', quality=85)
+        image.convert('RGB').save(
+            Path(user_directory).joinpath('images', f'{name_pattern}{size}_{str(len(counter))}.jpg'), quality=85)
 
 
 def new_psd(layer):
-    file_psd = user_directory + '\\' + layer.filename
+    file_psd = Path(user_directory).joinpath(layer.filename)
     layer.save(file_psd)
     load = PSDImage.open(file_psd)
     image = load.compose()
@@ -124,7 +137,7 @@ def new_psd(layer):
 
 
 def remove_file(f):
-    os.remove(user_directory + '\\' + f)
+    os.remove(Path(user_directory).joinpath(f))
 
 
 def clear_list(f):
