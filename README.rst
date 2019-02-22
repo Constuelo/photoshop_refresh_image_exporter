@@ -17,23 +17,7 @@ psd-tools
 
 .. code-block:: bash
 
-<<<<<<< HEAD
-    pip install psd-tools2==1.7.27
-
-Pillow
-
-.. code-block:: bash
-
-   pip install Pillow==4.1.1
-
-or install requirements.txt
-
-.. code-block:: bash
-
-   pip install -r requirements.txt
-=======
     pip install psd-tools
->>>>>>> a683aa4e160f59915ae5289b94936c10362269e9
 
 
 How To
