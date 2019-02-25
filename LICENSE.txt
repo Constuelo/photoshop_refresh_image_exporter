@@ -1,10 +1,6 @@
 MIT License
 
-<<<<<<< HEAD
-Copyright (c) [year] [fullname]
-=======
 Copyright (c) 2019 Rory Ferguson
->>>>>>> a683aa4e160f59915ae5289b94936c10362269e9
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
