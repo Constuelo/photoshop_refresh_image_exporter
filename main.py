@@ -18,6 +18,7 @@ psd = input('PSD name:')
 if psd:
     for file in os.listdir(user_directory):
         if psd in file:
+        	psd = file
             path_of_psd = Path(user_directory).joinpath(file)
             break
 
@@ -25,6 +26,7 @@ if psd:
 if not psd:
     for file in os.listdir(user_directory):
         if '.psb' in file or '.psd' in file:
+        	psd = file
             path_of_psd = Path(user_directory).joinpath(file)
             break
 
