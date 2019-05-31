@@ -1,1 +1,1 @@
-psd-tools
+psd-tools==1.8.16
